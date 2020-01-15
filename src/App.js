@@ -18,12 +18,13 @@ class App extends Component {
     loading: false,
     alert: null
   };
+
   //Function to search github users
   searchUsers = async text => {
     this.setState({ loading: true });
 
-    const res = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=
-    ${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);
+    const res = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=${github_client_id}&client_secret=
+    ${github_client_secret}`);
 
     this.setState({ users: res.data.items });
     this.setState({ loading: false });
@@ -31,18 +32,18 @@ class App extends Component {
   //Function to specific user
   getUser = async username => {
     this.setState({ loading: true });
-    const res = await axios.get(`https://api.github.com/users/${username}?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=
-  ${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);
-    console.log(res.data);
+    const res = await axios.get(`https://api.github.com/users/${username}?client_id=${github_client_id}&client_secret=
+  ${github_client_secret}`);
+
     this.setState({ user: res.data });
     this.setState({ loading: false });
   };
   //Function to Find user Repos
   getRepo = async username => {
     this.setState({ loading: true });
-    const res = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=
-  ${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);
-    console.log(res.data);
+    const res = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${github_client_id}&client_secret=
+  ${github_client_id}`);
+
     this.setState({ repos: res.data });
     this.setState({ loading: false });
   };
@@ -108,6 +109,16 @@ class App extends Component {
       </Router>
     );
   }
+}
+let github_client_id;
+let github_client_secret;
+
+if (process.env.NODE_ENV !== "produciton") {
+  github_client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
+  github_client_secret = process.env.REACT_APP_GITHUB_CLIENT_SECRET;
+} else {
+  github_client_id = process.env.GITHUB_CLIENT_ID;
+  github_client_secret = process.env.GITHUB_CLIENT_SECRET;
 }
 
 export default App;
